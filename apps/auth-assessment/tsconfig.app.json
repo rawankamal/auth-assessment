@@ -2,9 +2,20 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "../../dist/out-tsc",
-    "types": []
+    "types": [],
+    "target": "es2021",
+    "lib": [
+      "es2021",
+      "dom"
+    ]
   },
-  "include": ["src/**/*.ts"],
+  "include": [
+    "src/**/*.ts",
+    "login.spec.ts",
+    "src/app/login/login.ts",
+    "signup.spec.ts",
+    "src/app/signup/signup.ts"
+  ],
   "exclude": [
     "jest.config.ts",
     "src/test-setup.ts",
