@@ -1,101 +1,170 @@
-# AuthAssessment
+# PENNY-ASSESSMENT (Nx Monorepo)
 
-<a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
+This is a MEAN stack web application built with **MEAN Stack**, using the **Nx monorepo** structure. The project includes features like user authentication (sign up, login, logout), session management, protected routes, and a dashboard interface.
 
-✨ Your new, shiny [Nx workspace](https://nx.dev) is ready ✨.
+---
 
-[Learn more about this workspace setup and its capabilities](https://nx.dev/getting-started/tutorials/angular-monorepo-tutorial?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects) or run `npx nx graph` to visually explore what was created. Now, let's get you up to speed!
+## 🚀 Project Setup
 
-## Run tasks
+### 1️⃣ Clone the Repository
 
-To run the dev server for your app, use:
+```bash
+git clone https://github.com/rawankamal/auth-assessment.git
+cd auth-assessment
+```
 
-```sh
+### 2️⃣ Install Dependencies
+
+```bash
+npm install
+```
+
+### 3️⃣ Environment Variables
+
+Create a `.env` file in the backend (`apps/api`) directory with the following:
+
+```env
+MONGO_URI=mongodb+srv://rawan:penny-db123@penny-db.rwe3jvs.mongodb.net/?retryWrites=true&w=majority&appName=penny-db
+JWT_SECRET=penny-secret-key
+JWT_EXPIRATION=8h
+```
+
+### 4️⃣ Run the Application Locally
+
+#### Backend (NestJS API)
+
+```bash
+npx nx serve api
+```
+
+API will be running on:
+```
+http://localhost:3000/api
+```
+
+#### Frontend (Angular App)
+
+```bash
 npx nx serve auth-assessment
 ```
 
-To create a production bundle:
-
-```sh
-npx nx build auth-assessment
+Frontend will be running on:
+```
+http://localhost:4200
 ```
 
-To see all available targets to run for a project, run:
+---
 
-```sh
-npx nx show project auth-assessment
+## 🏗️ Project Structure
+
+```
+penny-assessment/
+├── apps/
+│   ├── api/                     # NestJS backend
+│   │   ├── src/
+│   │   │   ├── app/
+│   │   │   │   ├── auth/        # Authentication module
+│   │   │   │   │   ├── dto/     # Data transfer objects
+│   │   │   │   │   ├── auth.controller.ts
+│   │   │   │   │   ├── auth.module.ts
+│   │   │   │   │   ├── auth.service.ts
+│   │   │   │   │   └── jwt.strategy.ts
+│   │   │   │   ├── users/       # Users module
+│   │   │   │   │   ├── user.schema.ts
+│   │   │   │   │   ├── users.controller.ts
+│   │   │   │   │   ├── users.module.ts
+│   │   │   │   │   └── users.service.ts
+│   │   │   │   ├── app.controller.ts
+│   │   │   │   ├── app.controller.spec.ts
+│   │   │   │   ├── app.module.ts
+│   │   │   │   ├── app.service.ts
+│   │   │   │   └── app.service.spec.ts
+│   │   │   ├── assets/
+│   │   │   └── main.ts          # Entry point
+│   │   ├── tsconfig.app.json
+│   │   ├── tsconfig.spec.json
+│   │   ├── project.json
+│   │   ├── jest.config.ts
+│   │   └── eslint.config.mjs
+│   └── auth-assessment/         # Angular frontend
+│       ├── public/
+│       ├── src/
+│       │   ├── app/
+│       │   │   ├── dashboard/   # Dashboard component
+│       │   │   │   ├── dashboard.css
+│       │   │   │   ├── dashboard.html
+│       │   │   │   └── dashboard.ts
+│       │   │   ├── login/       # Login component
+│       │   │   ├── services/    # Angular services
+│       │   │   ├── signup/      # Signup component
+│       │   │   ├── app.component.ts
+│       │   │   ├── app.config.ts
+│       │   │   ├── app.css
+│       │   │   ├── app.html
+│       │   │   ├── app.routes.ts
+│       │   │   └── nx-welcome.ts
+│       │   ├── index.html
+│       │   ├── main.ts
+│       │   └── styles.css
+│       ├── tsconfig.app.json
+│       ├── tsconfig.spec.json
+│       ├── project.json
+│       ├── jest.config.ts
+│       └── eslint.config.mjs
+├── nx.json                      # Nx configuration
+├── package.json
+├── tsconfig.base.json
+└── README.md
 ```
 
-These targets are either [inferred automatically](https://nx.dev/concepts/inferred-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or defined in the `project.json` or `package.json` files.
+---
 
-[More about running tasks in the docs &raquo;](https://nx.dev/features/run-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+## ✨ Features
 
-## Add new projects
+- **User Authentication** (Sign up, Login, Logout)
+- **Dashboard Interface** with protected routes
+- **Session Management** (8-hour active login)
+- **Protected Routes** 
+- **MongoDB Atlas Integration**
+- **Nx Monorepo Architecture**
+- **Angular Frontend** with routing
+- **NestJS Backend** with modular structure
 
-While you could add new projects to your workspace manually, you might want to leverage [Nx plugins](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) and their [code generation](https://nx.dev/features/generate-code?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) feature.
 
-Use the plugin's generator to create new projects.
 
-To generate a new application, use:
+### Authentication Routes
 
-```sh
-npx nx g @nx/angular:app demo
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/auth/signup` | User registration |
+| POST | `/api/auth/login` | User login |
+### Example API Usage
+
+```javascript
+// Login
+fetch('http://localhost:3000/api/auth/login', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    email: 'user@example.com',
+    password: 'password123'
+  })
+});
 ```
 
-To generate a new library, use:
 
-```sh
-npx nx g @nx/angular:lib mylib
-```
 
-You can use `npx nx list` to get a list of installed plugins. Then, run `npx nx list <plugin-name>` to learn about more specific capabilities of a particular plugin. Alternatively, [install Nx Console](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) to browse plugins and generators in your IDE.
+## 🎯 Future Enhancements
 
-[Learn more about Nx plugins &raquo;](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) | [Browse the plugin registry &raquo;](https://nx.dev/plugin-registry?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+- [ ] Email verification
+- [ ] Password reset functionality
+- [ ] Social media authentication
+- [ ] Role-based access control
+- [ ] Real-time notifications
+- [ ] API rate limiting
 
-## Set up CI!
+---
 
-### Step 1
-
-To connect to Nx Cloud, run the following command:
-
-```sh
-npx nx connect
-```
-
-Connecting to Nx Cloud ensures a [fast and scalable CI](https://nx.dev/ci/intro/why-nx-cloud?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) pipeline. It includes features such as:
-
-- [Remote caching](https://nx.dev/ci/features/remote-cache?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task distribution across multiple machines](https://nx.dev/ci/features/distribute-task-execution?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Automated e2e test splitting](https://nx.dev/ci/features/split-e2e-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task flakiness detection and rerunning](https://nx.dev/ci/features/flaky-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-### Step 2
-
-Use the following command to configure a CI workflow for your workspace:
-
-```sh
-npx nx g ci-workflow
-```
-
-[Learn more about Nx on CI](https://nx.dev/ci/intro/ci-with-nx#ready-get-started-with-your-provider?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Install Nx Console
-
-Nx Console is an editor extension that enriches your developer experience. It lets you run tasks, generate code, and improves code autocompletion in your IDE. It is available for VSCode and IntelliJ.
-
-[Install Nx Console &raquo;](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Useful links
-
-Learn more:
-
-- [Learn more about this workspace setup](https://nx.dev/getting-started/tutorials/angular-monorepo-tutorial?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects)
-- [Learn about Nx on CI](https://nx.dev/ci/intro/ci-with-nx?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Releasing Packages with Nx release](https://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [What are Nx plugins?](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-And join the Nx community:
-- [Discord](https://go.nx.dev/community)
-- [Follow us on X](https://twitter.com/nxdevtools) or [LinkedIn](https://www.linkedin.com/company/nrwl)
-- [Our Youtube channel](https://www.youtube.com/@nxdevtools)
-- [Our blog](https://nx.dev/blog?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+**Made with ❤️ using the MEAN stack and Nx**
