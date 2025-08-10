@@ -167,4 +167,4 @@ fetch('http://localhost:3000/api/auth/login', {
 
 ---
 
-**Made with ❤️ using the MEAN stack and Nx**
+**Made with Rawan Kamal using the MEAN stack and Nx**
