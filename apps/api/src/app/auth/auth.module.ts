@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
+import { ConfigService } from '@nestjs/config';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { JwtStrategy } from './jwt.strategy';
@@ -10,9 +11,14 @@ import { User, UserSchema } from '../users/user.schema';
 @Module({
   imports: [
     PassportModule,
-    JwtModule.register({
-      secret: 'penny-secret-key',
-      signOptions: { expiresIn: '8h' },
+    JwtModule.registerAsync({
+      useFactory: (configService: ConfigService) => ({
+        secret: configService.get('JWT_SECRET') || 'penny-secret-key',
+        signOptions: {
+          expiresIn: configService.get('JWT_EXPIRES_IN') || '8h'
+        },
+      }),
+      inject: [ConfigService],
     }),
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
   ],

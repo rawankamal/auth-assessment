@@ -21,6 +21,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   sessionTimeLeft = '';
   private sessionTimer: Subscription | null = null;
   private sessionExpiry!: number;
+  isLoggingOut = false; // Add loading state
 
   private authService = inject(AuthService);
   private router = inject(Router);
@@ -80,9 +81,24 @@ export class DashboardComponent implements OnInit, OnDestroy {
     });
   }
 
+  // FIXED LOGOUT METHOD
   logout() {
-    this.authService.logout();
-    localStorage.removeItem('token');
-    this.router.navigate(['/login']);
+    this.isLoggingOut = true;
+
+    this.authService.logout().subscribe({
+      next: (response) => {
+        console.log('Logout successful:', response);
+        localStorage.removeItem('token');
+        this.isLoggingOut = false;
+        this.router.navigate(['/login']);
+      },
+      error: (error) => {
+        console.error('Logout error:', error);
+        // Even if backend logout fails, still logout locally
+        localStorage.removeItem('token');
+        this.isLoggingOut = false;
+        this.router.navigate(['/login']);
+      }
+    });
   }
 }
