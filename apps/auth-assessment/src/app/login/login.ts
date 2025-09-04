@@ -41,7 +41,7 @@ export class LoginComponent {
       next: (res: any) => {
         console.log('Login API response:', res);
         this.isLoading = false;
-  localStorage.setItem('token', res.access_token);
+        localStorage.setItem('token', res.access_token);
         console.log('Navigating to /dashboard...');
         this.router.navigate(['/dashboard']).then(success => {
           console.log('Navigation result:', success);
