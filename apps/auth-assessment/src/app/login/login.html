@@ -25,33 +25,63 @@
                 <i class="fas fa-envelope me-2"></i>Email Address
               </label>
               <input type="email" class="form-control form-control-lg" id="email" formControlName="email"
-                placeholder="Enter your email"
-                [class.is-invalid]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
-              <div class="invalid-feedback" *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
+                placeholder="Enter your email" [class.is-invalid]="
+                  loginForm.get('email')?.invalid &&
+                  loginForm.get('email')?.touched
+                " />
+              <div class="invalid-feedback" *ngIf="
+                  loginForm.get('email')?.invalid &&
+                  loginForm.get('email')?.touched
+                ">
                 <small *ngIf="loginForm.get('email')?.errors?.['required']">Email is required</small>
                 <small *ngIf="loginForm.get('email')?.errors?.['email']">Please enter a valid email</small>
               </div>
             </div>
 
             <!-- Password Field -->
-            <div class="mb-4">
+            <div class="mb-3 position-relative">
               <label for="password" class="form-label">
                 <i class="fas fa-lock me-2"></i>Password
               </label>
-              <input type="password" class="form-control form-control-lg" id="password" formControlName="password"
-                placeholder="Enter your password"
-                [class.is-invalid]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
-              <div class="invalid-feedback"
-                *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+
+              <input [type]="showPassword ? 'text' : 'password'" class="form-control form-control-lg pe-5" id="password"
+                formControlName="password" placeholder="Enter your password" [class.is-invalid]="
+                  loginForm.get('password')?.invalid &&
+                  loginForm.get('password')?.touched
+                " />
+
+              <!-- Eye Icon -->
+              <span class="position-absolute top-50 end-0 translate-middle-y pe-3" style="cursor:pointer;">
+                <i class="fas"
+                   tabindex="0"
+                   role="button"
+                   (click)="togglePasswordVisibility()"
+                   (keyup)="($event.key === 'Enter' || $event.key === ' ') && togglePasswordVisibility()"
+                   aria-label="Toggle password visibility"
+                   [ngClass]="showPassword ? 'fa-eye-slash' : 'fa-eye'">
+                </i>
+              </span>
+
+              <div class="invalid-feedback" *ngIf="
+                  loginForm.get('password')?.invalid &&
+                  loginForm.get('password')?.touched
+                ">
                 <small *ngIf="loginForm.get('password')?.errors?.['required']">Password is required</small>
               </div>
+            </div>
+
+            <!-- Forgot Password Link -->
+            <div class="text-end mb-3">
+              <button type="button" class="btn btn-link text-decoration-none p-0" (click)="navigateToForgotPassword()">
+                Forgot Password?
+              </button>
             </div>
 
             <!-- Submit Button -->
             <button type="submit" class="btn btn-primary btn-lg w-100 mb-3" [disabled]="isLoading">
               <span class="spinner-border spinner-border-sm me-2" role="status" *ngIf="isLoading"></span>
               <i class="fas fa-sign-in-alt me-2" *ngIf="!isLoading"></i>
-              {{ isLoading ? 'Signing In...' : 'Sign In' }}
+              {{ isLoading ? "Signing In..." : "Sign In" }}
             </button>
 
             <!-- Signup Link -->
