@@ -134,3 +134,15 @@
   0%, 100% { transform: translateY(0px);}
   50% { transform: translateY(-10px);}
 }
+a {
+  color: #2c3e50 ;
+}
+
+i {
+  position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #6c757d;
+}

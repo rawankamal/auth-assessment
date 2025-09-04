@@ -147,3 +147,7 @@ a.text-decoration-none:hover {
   color: #ff6f91;
   text-decoration: underline;
 }
+.btn-link {
+  color: #ff9a9e;
+  font-weight: 600;
+}

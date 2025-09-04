@@ -63,4 +63,10 @@ export class LoginComponent {
   navigateToForgotPassword() {
     this.router.navigate(['/forgot-password']);
   }
+  showPassword = false;
+
+  togglePasswordVisibility() {
+    this.showPassword = !this.showPassword;
+  }
+
 }
