@@ -6,6 +6,7 @@ import { inject } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
+
 @Component({
   selector: 'app-login',
   standalone: true,
@@ -57,5 +58,9 @@ export class LoginComponent {
 
   navigateToSignup() {
     this.router.navigate(['/signup']);
+  }
+
+  navigateToForgotPassword() {
+    this.router.navigate(['/forgot-password']);
   }
 }
