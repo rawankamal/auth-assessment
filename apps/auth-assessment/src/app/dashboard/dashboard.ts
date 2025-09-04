@@ -2,9 +2,6 @@ import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { interval, Subscription } from 'rxjs';
-import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule } from '@angular/forms';
-
 
 interface UserInfo {
   id: string;
@@ -15,20 +12,15 @@ interface UserInfo {
 
 @Component({
   selector: 'app-dashboard',
-  templateUrl: './dashboard.html',
-  styleUrls: ['./dashboard.css'],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule]
+  templateUrl: './dashboard.html',
+  styleUrls: ['./dashboard.css']
 })
 export class DashboardComponent implements OnInit, OnDestroy {
   userInfo: UserInfo | null = null;
   sessionTimeLeft = '';
   private sessionTimer: Subscription | null = null;
-  private sessionExpiry!: number; 
-
-  constructor() {
-    this.sessionExpiry = 0;  
-  }
+  private sessionExpiry!: number;
 
   private authService = inject(AuthService);
   private router = inject(Router);
@@ -45,7 +37,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   loadUserInfo() {
-    const token = localStorage.getItem('authToken');
+    const token = localStorage.getItem('token');
     if (token) {
       try {
         // Decode JWT payload (base64 decode the middle part)
@@ -59,7 +51,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         };
       } catch (error) {
         console.error('Invalid JWT token:', error);
-        localStorage.removeItem('authToken');
+        localStorage.removeItem('token');
         this.router.navigate(['/login']);
       }
     } else {
@@ -89,15 +81,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   logout() {
-    this.authService.logout().subscribe({
-      next: () => {
-        localStorage.removeItem('authToken');
-        this.router.navigate(['/login']);
-      },
-      error: () => {
-        localStorage.removeItem('authToken');
-        this.router.navigate(['/login']);
-      }
-    });
+    this.authService.logout();
+    localStorage.removeItem('token');
+    this.router.navigate(['/login']);
   }
 }

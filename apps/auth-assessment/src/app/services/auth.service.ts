@@ -1,49 +1,28 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-
-interface SignupData {
-  name: string;
-  email: string;
-  password: string;
-}
-
-interface LoginData {
-  email: string;
-  password: string;
-}
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private apiUrl = 'http://localhost:3000/api/auth'; // backend URL
+  private apiUrl = 'http://localhost:3000/api/auth';
 
-  private http = inject(HttpClient);  // <-- inject here
+  private http = inject(HttpClient);
 
-  signup(data: SignupData): Observable<any> {
+  signup(data: { name: string; email: string; password: string }) {
     return this.http.post(`${this.apiUrl}/signup`, data);
   }
 
-  login(data: LoginData): Observable<{ access_token: string }> {
-    return this.http.post<{ access_token: string }>(`${this.apiUrl}/login`, data);
+  login(email: string, password: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/login`, { email, password });
   }
 
-  logout(): Observable<any> {
-    const token = this.getToken();
-    const headers = token ? new HttpHeaders({ Authorization: `Bearer ${token}` }) : undefined;
-    return this.http.post(`${this.apiUrl}/logout`, {}, { headers });
+  logout() {
+    localStorage.removeItem('token');
   }
 
-  setToken(token: string): void {
-    localStorage.setItem('authToken', token);
-  }
-
-  getToken(): string | null {
-    return localStorage.getItem('authToken');
-  }
-
-  clearToken(): void {
-    localStorage.removeItem('authToken');
+  isLoggedIn(): boolean {
+    return !!localStorage.getItem('token');
   }
 }
