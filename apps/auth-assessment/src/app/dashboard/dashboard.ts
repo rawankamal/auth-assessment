@@ -24,10 +24,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
   userInfo: UserInfo | null = null;
   sessionTimeLeft = '';
   private sessionTimer: Subscription | null = null;
-  private sessionExpiry!: number; 
+  private sessionExpiry!: number;
 
   constructor() {
-    this.sessionExpiry = 0;  
+    this.sessionExpiry = 0;
   }
 
   private authService = inject(AuthService);
@@ -45,7 +45,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   loadUserInfo() {
-    const token = localStorage.getItem('authToken');
+    const token = localStorage.getItem('token');
     if (token) {
       try {
         // Decode JWT payload (base64 decode the middle part)
@@ -59,7 +59,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         };
       } catch (error) {
         console.error('Invalid JWT token:', error);
-        localStorage.removeItem('authToken');
+  localStorage.removeItem('token');
         this.router.navigate(['/login']);
       }
     } else {
@@ -89,15 +89,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   logout() {
-    this.authService.logout().subscribe({
-      next: () => {
-        localStorage.removeItem('authToken');
-        this.router.navigate(['/login']);
-      },
-      error: () => {
-        localStorage.removeItem('authToken');
-        this.router.navigate(['/login']);
-      }
-    });
+    this.authService.logout();
+    localStorage.removeItem('token');
+    this.router.navigate(['/login']);
   }
 }
