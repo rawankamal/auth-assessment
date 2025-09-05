@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { interval, Subscription } from 'rxjs';
+import { CommonModule } from '@angular/common';
 
 interface UserInfo {
   id: string;
@@ -13,6 +14,7 @@ interface UserInfo {
 @Component({
   selector: 'app-dashboard',
   standalone: true,
+  imports: [CommonModule],
   templateUrl: './dashboard.html',
   styleUrls: ['./dashboard.css']
 })
@@ -21,7 +23,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
   sessionTimeLeft = '';
   private sessionTimer: Subscription | null = null;
   private sessionExpiry!: number;
-  isLoggingOut = false; // Add loading state
+  isLoggingOut = false;
+
+  // NEW PROPERTIES
+  protectedData: any[] = [];
+  isLoadingData = false;
 
   private authService = inject(AuthService);
   private router = inject(Router);
@@ -29,6 +35,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.loadUserInfo();
     this.startSessionTimer();
+    this.loadProtectedData(); // ADD THIS LINE
   }
 
   ngOnDestroy() {
@@ -60,6 +67,21 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
   }
 
+  // NEW METHOD
+  loadProtectedData() {
+    this.isLoadingData = true;
+    this.authService.getProtectedData().subscribe({
+      next: (data) => {
+        this.protectedData = data;
+        this.isLoadingData = false;
+      },
+      error: (error) => {
+        console.error('Failed to load protected data:', error);
+        this.isLoadingData = false;
+      }
+    });
+  }
+
   startSessionTimer() {
     const sessionDuration = 8 * 60 * 60 * 1000; // 8 hours in ms
     this.sessionExpiry = Date.now() + sessionDuration;
@@ -81,7 +103,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     });
   }
 
-  // FIXED LOGOUT METHOD
   logout() {
     this.isLoggingOut = true;
 
