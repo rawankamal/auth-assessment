@@ -31,6 +31,13 @@ export class AuthService {
     return this.http.post(`${this.apiUrl}/reset-password`, { token, newPassword });
   }
 
+  // ✅ FIXED: Now sends Authorization header
+  getProtectedData(): Observable<any> {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.get('http://localhost:3000/api/users/list', { headers });
+  }
+
   isLoggedIn(): boolean {
     return !!localStorage.getItem('token');
   }

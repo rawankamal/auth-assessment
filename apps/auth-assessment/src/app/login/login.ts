@@ -1,11 +1,15 @@
-import { Component } from '@angular/core';
+import { Component, inject, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AuthService } from '../services/auth.service';
-import { inject } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { Observable, Subject, takeUntil } from 'rxjs';
 
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
+
+import { AppState } from '../store/app.state';
+import { login, clearError } from '../store/auth/auth.actions';
+import { selectIsLoading, selectError } from '../store/auth/auth.selectors';
 
 @Component({
   selector: 'app-login',
@@ -14,20 +18,33 @@ import { ReactiveFormsModule } from '@angular/forms';
   templateUrl: './login.html',
   styleUrls: ['./login.css'],
 })
-export class LoginComponent {
+export class LoginComponent implements OnDestroy {
   loginForm: FormGroup;
-  errorMessage = '';
-  isLoading = false;
+  showPassword = false;
 
-  fb = inject(FormBuilder);
-  authService = inject(AuthService);
-  router = inject(Router);
+  // NgRx Observables
+  isLoading$: Observable<boolean>;
+  error$: Observable<string | null>;
+
+  private destroy$ = new Subject<void>();
+  private fb = inject(FormBuilder);
+  private store = inject(Store<AppState>);
+  private router = inject(Router);
 
   constructor() {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required],
     });
+
+    // Subscribe to NgRx state
+    this.isLoading$ = this.store.select(selectIsLoading);
+    this.error$ = this.store.select(selectError);
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   onSubmit() {
@@ -35,25 +52,13 @@ export class LoginComponent {
       return;
     }
 
-    this.isLoading = true;
     const { email, password } = this.loginForm.value;
 
-    this.authService.login(email, password).subscribe({
-      next: (res: any) => {
-        console.log('Login API response:', res);
-        this.isLoading = false;
-        localStorage.setItem('token', res.access_token);
-        console.log('Navigating to /dashboard...');
-        this.router.navigate(['/dashboard']).then(success => {
-          console.log('Navigation result:', success);
-        });
-      },
-      error: (err) => {
-        this.isLoading = false;
-        this.errorMessage = err.error?.message || 'Login failed';
-        console.error('Login error:', err);
-      },
-    });
+    // Clear any previous errors
+    this.store.dispatch(clearError());
+
+    // Dispatch login action
+    this.store.dispatch(login({ email, password }));
   }
 
   navigateToSignup() {
@@ -63,10 +68,12 @@ export class LoginComponent {
   navigateToForgotPassword() {
     this.router.navigate(['/forgot-password']);
   }
-  showPassword = false;
 
   togglePasswordVisibility() {
     this.showPassword = !this.showPassword;
   }
 
+  clearErrorMessage() {
+    this.store.dispatch(clearError());
+  }
 }
