@@ -10,18 +10,12 @@
             <h2 class="auth-title">Create Account</h2>
           </div>
 
-          <!-- Success Message -->
-          <div class="alert alert-success alert-dismissible fade show" role="alert" *ngIf="successMessage">
-            <i class="fas fa-check-circle me-2"></i>
-            {{ successMessage }}
-            <button type="button" class="btn-close" aria-label="Close" (click)="successMessage = ''"></button>
-          </div>
-
           <!-- Error Message -->
-          <div class="alert alert-danger alert-dismissible fade show" role="alert" *ngIf="errorMessage">
+          <div class="alert alert-danger alert-dismissible fade show" role="alert"
+            *ngIf="error$ | async as errorMessage">
             <i class="fas fa-exclamation-triangle me-2"></i>
             {{ errorMessage }}
-            <button type="button" class="btn-close" aria-label="Close" (click)="errorMessage = ''"></button>
+            <button type="button" class="btn-close" aria-label="Close" (click)="clearErrorMessage()"></button>
           </div>
 
           <form [formGroup]="signupForm" (ngSubmit)="onSubmit()" class="auth-form">
@@ -71,10 +65,10 @@
             </div>
 
             <!-- Submit Button -->
-            <button type="submit" class="btn btn-primary btn-lg w-100 mb-3" [disabled]="isLoading">
-              <span class="spinner-border spinner-border-sm me-2" role="status" *ngIf="isLoading"></span>
-              <i class="fas fa-user-plus me-2" *ngIf="!isLoading"></i>
-              {{ isLoading ? 'Creating Account...' : 'Create Account' }}
+            <button type="submit" class="btn btn-primary btn-lg w-100 mb-3" [disabled]="isLoading$ | async">
+              <span class="spinner-border spinner-border-sm me-2" role="status" *ngIf="isLoading$ | async"></span>
+              <i class="fas fa-user-plus me-2" *ngIf="(isLoading$ | async) === false"></i>
+              {{ (isLoading$ | async) ? 'Creating Account...' : 'Create Account' }}
             </button>
 
             <!-- Login Link -->

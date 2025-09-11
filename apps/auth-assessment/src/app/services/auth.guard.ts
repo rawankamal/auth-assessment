@@ -1,45 +1,33 @@
-import { Injectable } from '@angular/core';
-import { inject } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { CanActivate, Router } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { Observable, map, take } from 'rxjs';
+import { AppState } from '../store/app.state';
+import { selectIsAuthenticated } from '../store/auth/auth.selectors';
+import { loadTokenFromStorage } from '../store/auth/auth.actions';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthGuard implements CanActivate {
+  private store = inject(Store<AppState>);
   private router = inject(Router);
 
-  canActivate(): boolean {
-    const token = localStorage.getItem('token');
+  canActivate(): Observable<boolean> {
+    // First, try to load token from storage
+    this.store.dispatch(loadTokenFromStorage());
 
-    if (!token) {
-      console.log('No token found, redirecting to login');
-      this.router.navigate(['/login']);
-      return false;
-    }
-
-    try {
-      // Decode JWT payload (middle part of token)
-      const payload = JSON.parse(atob(token.split('.')[1]));
-
-      // Check if token is expired
-      const currentTime = Math.floor(Date.now() / 1000);
-      const isExpired = payload.exp < currentTime;
-
-      if (isExpired) {
-        console.warn('Token expired, redirecting to login');
-        localStorage.removeItem('token');
-        this.router.navigate(['/login']);
-        return false;
-      }
-
-      console.log('Token is valid, allowing access');
-      return true;
-
-    } catch (error) {
-      console.error('Invalid token format:', error);
-      localStorage.removeItem('token');
-      this.router.navigate(['/login']);
-      return false;
-    }
+    return this.store.select(selectIsAuthenticated).pipe(
+      take(1),
+      map(isAuthenticated => {
+        if (isAuthenticated) {
+          return true;
+        } else {
+          console.log('User not authenticated, redirecting to login');
+          this.router.navigate(['/login']);
+          return false;
+        }
+      })
+    );
   }
 }

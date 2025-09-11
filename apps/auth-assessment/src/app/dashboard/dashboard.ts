@@ -1,15 +1,12 @@
 import { Component, OnInit, OnDestroy, inject } from '@angular/core';
-import { Router } from '@angular/router';
-import { AuthService } from '../services/auth.service';
-import { interval, Subscription } from 'rxjs';
+import { Store } from '@ngrx/store';
+import { Observable, interval, Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
 
-interface UserInfo {
-  id: string;
-  name: string;
-  email: string;
-  loginTime: string;
-}
+import { AppState } from '../store/app.state';
+import { logout, loadTokenFromStorage } from '../store/auth/auth.actions';
+import { selectUserInfo, selectIsLoading } from '../store/auth/auth.selectors';
+import { User } from '../store/auth/auth.state';
 
 @Component({
   selector: 'app-dashboard',
@@ -19,67 +16,32 @@ interface UserInfo {
   styleUrls: ['./dashboard.css']
 })
 export class DashboardComponent implements OnInit, OnDestroy {
-  userInfo: UserInfo | null = null;
+  // NgRx Observables
+  userInfo$: Observable<User | null>;
+  isLoggingOut$: Observable<boolean>;
+
   sessionTimeLeft = '';
   private sessionTimer: Subscription | null = null;
   private sessionExpiry!: number;
-  isLoggingOut = false;
 
-  // NEW PROPERTIES
-  protectedData: any[] = [];
-  isLoadingData = false;
+  private store = inject(Store<AppState>);
 
-  private authService = inject(AuthService);
-  private router = inject(Router);
+  constructor() {
+    this.userInfo$ = this.store.select(selectUserInfo);
+    this.isLoggingOut$ = this.store.select(selectIsLoading);
+  }
 
   ngOnInit() {
-    this.loadUserInfo();
+    // Load user info from token if available
+    this.store.dispatch(loadTokenFromStorage());
+
     this.startSessionTimer();
-    this.loadProtectedData(); // ADD THIS LINE
   }
 
   ngOnDestroy() {
     if (this.sessionTimer) {
       this.sessionTimer.unsubscribe();
     }
-  }
-
-  loadUserInfo() {
-    const token = localStorage.getItem('token');
-    if (token) {
-      try {
-        // Decode JWT payload (base64 decode the middle part)
-        const payload = JSON.parse(atob(token.split('.')[1]));
-
-        this.userInfo = {
-          id: payload.sub || payload.id || '507f1f77bcf86cd799439011',
-          name: payload.name || 'Test User',
-          email: payload.email || 'test@example.com',
-          loginTime: new Date().toLocaleString(),
-        };
-      } catch (error) {
-        console.error('Invalid JWT token:', error);
-        localStorage.removeItem('token');
-        this.router.navigate(['/login']);
-      }
-    } else {
-      this.router.navigate(['/login']);
-    }
-  }
-
-  // NEW METHOD
-  loadProtectedData() {
-    this.isLoadingData = true;
-    this.authService.getProtectedData().subscribe({
-      next: (data) => {
-        this.protectedData = data;
-        this.isLoadingData = false;
-      },
-      error: (error) => {
-        console.error('Failed to load protected data:', error);
-        this.isLoadingData = false;
-      }
-    });
   }
 
   startSessionTimer() {
@@ -104,22 +66,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   logout() {
-    this.isLoggingOut = true;
-
-    this.authService.logout().subscribe({
-      next: (response) => {
-        console.log('Logout successful:', response);
-        localStorage.removeItem('token');
-        this.isLoggingOut = false;
-        this.router.navigate(['/login']);
-      },
-      error: (error) => {
-        console.error('Logout error:', error);
-        // Even if backend logout fails, still logout locally
-        localStorage.removeItem('token');
-        this.isLoggingOut = false;
-        this.router.navigate(['/login']);
-      }
-    });
+    // Dispatch logout action - NgRx will handle the rest
+    this.store.dispatch(logout());
   }
 }
