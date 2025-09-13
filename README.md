@@ -16,7 +16,7 @@ cd auth-assessment
 ### 2️⃣ Install Dependencies
 
 ```bash
-npm install
+npm install --legacy-peer-deps
 ```
 
 ### 3️⃣ Environment Variables
