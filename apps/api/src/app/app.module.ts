@@ -8,13 +8,13 @@ import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
-    // Load environment variables
+    // Load environment variables globally
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: '.env',
+      envFilePath: ['.env', 'apps/api/.env'],
     }),
 
-    // Use environment variable for MongoDB connection
+    // MongoDB connection
     MongooseModule.forRoot(
       process.env['MONGODB_URI'] ||
       'mongodb+srv://rawan:penny-db123@penny-db.rwe3jvs.mongodb.net/?retryWrites=true&w=majority&appName=penny-db'
@@ -26,4 +26,4 @@ import { UsersModule } from './users/users.module';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {}
