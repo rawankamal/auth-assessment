@@ -1,4 +1,3 @@
-// apps/auth-assessment/src/app/app.ts
 import { Component, OnInit, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { Store } from '@ngrx/store';
@@ -15,7 +14,6 @@ export class AppComponent implements OnInit {
   private store = inject(Store<AppState>);
 
   ngOnInit() {
-    // Load authentication state from localStorage on app startup
     this.store.dispatch(loadTokenFromStorage());
   }
 }
