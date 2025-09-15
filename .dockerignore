@@ -1,0 +1,10 @@
+node_modules
+dist
+apps/dist
+.angular
+.nx
+.git
+.gitignore
+Dockerfile
+docker-compose*
+README.md

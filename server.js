@@ -1,5 +1,5 @@
-const express = require("express");
-const path = require("path");
+const express = require('express');
+const path = require('path');
 
 const app = express();
 
@@ -25,8 +25,8 @@ app.get('/health', (req, res) => {
     environment: process.env.NODE_ENV || 'development',
     paths: {
       frontend: path.join(__dirname, 'apps/dist/apps/frontend'),
-      api: path.join(__dirname, 'apps/dist/api/main.js')
-    }
+      api: path.join(__dirname, 'apps/dist/api/main.js'),
+    },
   });
 });
 
@@ -72,7 +72,6 @@ async function initializeNestJS() {
 
     console.log('✅ NestJS API integrated successfully');
     return true;
-
   } catch (error) {
     console.error('❌ Failed to initialize NestJS:', error.message);
 
@@ -81,7 +80,7 @@ async function initializeNestJS() {
       res.json({
         message: 'API is running in fallback mode',
         timestamp: new Date().toISOString(),
-        error: 'NestJS initialization failed'
+        error: 'NestJS initialization failed',
       });
     });
 
@@ -91,7 +90,7 @@ async function initializeNestJS() {
         message: 'NestJS failed to initialize',
         path: req.path,
         method: req.method,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     });
 
@@ -106,11 +105,13 @@ console.log(`📁 Frontend path: ${frontendPath}`);
 // Check if frontend build exists
 const fs = require('fs');
 if (fs.existsSync(frontendPath)) {
-  app.use(express.static(frontendPath, {
-    maxAge: process.env.NODE_ENV === 'production' ? '1y' : '0',
-    etag: false,
-    index: false // Don't serve index.html automatically - we'll handle SPA routing
-  }));
+  app.use(
+    express.static(frontendPath, {
+      maxAge: process.env.NODE_ENV === 'production' ? '1y' : '0',
+      etag: false,
+      index: false, // Don't serve index.html automatically - we'll handle SPA routing
+    })
+  );
   console.log('✅ Frontend static files configured');
 } else {
   console.warn('⚠️ Frontend build not found at:', frontendPath);
@@ -181,15 +182,22 @@ app.use((error, req, res, next) => {
   console.error('Server error:', error);
   res.status(500).json({
     error: 'Internal server error',
-    message: process.env.NODE_ENV === 'development' ? error.message : 'Something went wrong',
-    timestamp: new Date().toISOString()
+    message:
+      process.env.NODE_ENV === 'development'
+        ? error.message
+        : 'Something went wrong',
+    timestamp: new Date().toISOString(),
   });
 });
 
 // Start the server
 async function startServer() {
   const PORT = process.env.PORT || 8080;
-  const HOST = process.env.HOST || '0.0.0.0';
+  const HOST = '0.0.0.0'; // لازم Cloud Run يقدر يربط
+
+  app.listen(PORT, HOST, () => {
+    console.log(`Server running on ${HOST}:${PORT}`);
+  });
 
   console.log('🚀 Initializing server...');
   console.log(`📊 Node.js version: ${process.version}`);
@@ -202,8 +210,14 @@ async function startServer() {
   const server = app.listen(PORT, HOST, () => {
     console.log(`✅ Server running on ${HOST}:${PORT}`);
     console.log(`📁 Frontend: ${frontendPath}`);
-    console.log(`🔌 API Status: ${nestInitialized ? 'Integrated' : 'Fallback mode'}`);
-    console.log(`💾 Memory: ${Math.round(process.memoryUsage().heapUsed / 1024 / 1024)} MB`);
+    console.log(
+      `🔌 API Status: ${nestInitialized ? 'Integrated' : 'Fallback mode'}`
+    );
+    console.log(
+      `💾 Memory: ${Math.round(
+        process.memoryUsage().heapUsed / 1024 / 1024
+      )} MB`
+    );
     console.log('=====================================');
   });
 
@@ -215,12 +229,15 @@ async function startServer() {
       console.log('✅ Express server closed');
 
       if (nestApp) {
-        nestApp.close().then(() => {
-          console.log('✅ NestJS app closed');
-          process.exit(0);
-        }).catch(() => {
-          process.exit(1);
-        });
+        nestApp
+          .close()
+          .then(() => {
+            console.log('✅ NestJS app closed');
+            process.exit(0);
+          })
+          .catch(() => {
+            process.exit(1);
+          });
       } else {
         process.exit(0);
       }
@@ -232,7 +249,7 @@ async function startServer() {
 }
 
 // Start the application
-startServer().catch(error => {
+startServer().catch((error) => {
   console.error('💥 Failed to start server:', error);
   process.exit(1);
 });
