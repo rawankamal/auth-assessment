@@ -12,7 +12,7 @@ RUN npm install --legacy-peer-deps
 # Copy source code
 COPY . .
 
-# Build both applications
+# Build both applications (Nx + Angular)
 RUN npm run build
 
 # Stage 2: Production
@@ -20,23 +20,16 @@ FROM node:20-alpine
 
 WORKDIR /app
 
-# Copy package files and install production dependencies
+# Copy only production dependencies
 COPY package.json package-lock.json* ./
 RUN npm install --omit=dev --legacy-peer-deps && npm cache clean --force
 
-# Copy built applications from builder stage
-# Note: Nx builds to dist/apps/* not apps/dist/*
+# Copy built apps from builder
 COPY --from=builder /app/dist ./dist
 
-# Copy any additional files needed at runtime
-COPY --from=builder /app/nx.json ./nx.json
-
-# Set environment variables
-ENV NODE_ENV=production
+# Expose Cloud Run default port
 ENV PORT=8080
-
-# Expose port
 EXPOSE 8080
 
-# Start the NestJS application
-CMD ["node", "apps/dist/apps/api/main.js"]
+# Start server using NestJS entrypoint
+CMD ["node", "apps/dist/api/main.js"]
