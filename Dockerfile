@@ -13,7 +13,7 @@ RUN npm install --legacy-peer-deps
 COPY . .
 
 # Build both applications
-RUN npm run build 
+RUN npm run build
 
 # Verify the actual build structure
 RUN echo "=== Build verification ===" && \
@@ -31,11 +31,10 @@ FROM node:20-alpine
 
 WORKDIR /app
 
-# Copy package files
+# Copy only production package.json (dependencies فقط)
 COPY package.json package-lock.json* ./
+RUN npm install --omit=dev --legacy-peer-deps && npm cache clean --force
 
-# Install only production dependencies
-RUN npm install --only=production && npm cache clean --force
 
 # Copy built applications from builder stage
 COPY --from=builder /app/apps/dist ./apps/dist
