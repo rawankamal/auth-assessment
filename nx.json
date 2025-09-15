@@ -80,7 +80,7 @@
     }
   ],
   "projects": {
-    "auth-assessment": {
+    "frontend": {
       "tags": []
     },
     "api": {
