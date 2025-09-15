@@ -6,7 +6,8 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class AuthService {
-  private apiUrl = 'http://localhost:3000/api/auth';
+  private apiUrl = '/api/auth';
+  private usersUrl = '/api/users';
   private http = inject(HttpClient);
 
   signup(data: { name: string; email: string; password: string }) {
@@ -31,11 +32,10 @@ export class AuthService {
     return this.http.post(`${this.apiUrl}/reset-password`, { token, newPassword });
   }
 
-  // ✅ FIXED: Now sends Authorization header
   getProtectedData(): Observable<any> {
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    return this.http.get('http://localhost:3000/api/users/list', { headers });
+    return this.http.get(`${this.usersUrl}/list`, { headers });
   }
 
   isLoggedIn(): boolean {

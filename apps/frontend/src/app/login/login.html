@@ -12,10 +12,11 @@
           </div>
 
           <!-- Error Message -->
-          <div class="alert alert-danger alert-dismissible fade show" role="alert" *ngIf="errorMessage">
+          <div class="alert alert-danger alert-dismissible fade show" role="alert"
+            *ngIf="error$ | async as errorMessage">
             <i class="fas fa-exclamation-triangle me-2"></i>
             {{ errorMessage }}
-            <button type="button" class="btn-close" aria-label="Close" (click)="errorMessage = ''"></button>
+            <button type="button" class="btn-close" aria-label="Close" (click)="clearErrorMessage()"></button>
           </div>
 
           <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="auth-form">
@@ -52,13 +53,9 @@
 
               <!-- Eye Icon -->
               <span class="position-absolute top-50 end-0 translate-middle-y pe-3" style="cursor:pointer;">
-                <i class="fas"
-                   tabindex="0"
-                   role="button"
-                   (click)="togglePasswordVisibility()"
-                   (keyup)="($event.key === 'Enter' || $event.key === ' ') && togglePasswordVisibility()"
-                   aria-label="Toggle password visibility"
-                   [ngClass]="showPassword ? 'fa-eye-slash' : 'fa-eye'">
+                <i class="fas" tabindex="0" role="button" (click)="togglePasswordVisibility()"
+                  (keyup)="($event.key === 'Enter' || $event.key === ' ') && togglePasswordVisibility()"
+                  aria-label="Toggle password visibility" [ngClass]="showPassword ? 'fa-eye-slash' : 'fa-eye'">
                 </i>
               </span>
 
@@ -78,10 +75,10 @@
             </div>
 
             <!-- Submit Button -->
-            <button type="submit" class="btn btn-primary btn-lg w-100 mb-3" [disabled]="isLoading">
-              <span class="spinner-border spinner-border-sm me-2" role="status" *ngIf="isLoading"></span>
-              <i class="fas fa-sign-in-alt me-2" *ngIf="!isLoading"></i>
-              {{ isLoading ? "Signing In..." : "Sign In" }}
+            <button type="submit" class="btn btn-primary btn-lg w-100 mb-3" [disabled]="isLoading$ | async">
+              <span class="spinner-border spinner-border-sm me-2" role="status" *ngIf="isLoading$ | async"></span>
+              <i class="fas fa-sign-in-alt me-2" *ngIf="(isLoading$ | async) === false"></i>
+              {{ (isLoading$ | async) ? "Signing In..." : "Sign In" }}
             </button>
 
             <!-- Signup Link -->
