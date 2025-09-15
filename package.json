@@ -4,12 +4,16 @@
   "license": "MIT",
   "scripts": {
     "start": "node dist/apps/api/main.js",
-    "build": "nx run-many --target=build --projects=api,auth-assessment --configuration=production",
+    "build": "nx run-many --target=build --projects=api,frontend --configuration=production",
     "build:api": "nx build api --configuration=production",
-    "build:frontend": "nx build auth-assessment --configuration=production",
+    "build:frontend": "nx build frontend --configuration=production",
     "test:local": "npm run build && npm start",
     "deploy:gcp": "npm run build && gcloud app deploy --quiet",
-    "deploy:dev": "npm run build && gcloud app deploy --version=dev --no-promote"
+    "deploy:dev": "npm run build && gcloud app deploy --version=dev --no-promote",
+    "start": "node server.js",
+    "start:prod": "NODE_ENV=production node server.js",
+    "deploy:gcp": "gcloud app deploy --quiet",
+    "logs:gcp": "gcloud app logs tail -s default"
   },
   "private": true,
   "dependencies": {
@@ -83,6 +87,9 @@
     "tslib": "^2.3.0",
     "typescript": "~5.8.2",
     "typescript-eslint": "^8.29.0",
-    "webpack-cli": "^5.1.4"
+    "webpack-cli": "^5.1.4",
+    "http-proxy-middleware": "^2.0.6",
+    "compression": "^1.7.4",
+    "helmet": "^7.1.0"
   }
 }
