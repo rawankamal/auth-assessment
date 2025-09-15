@@ -20,17 +20,16 @@ FROM node:20-alpine
 
 WORKDIR /app
 
-# Copy only production package.json (dependencies فقط)
+# Copy only production dependencies
 COPY package.json package-lock.json* ./
 RUN npm install --omit=dev --legacy-peer-deps && npm cache clean --force
 
 # Copy built apps from builder
 COPY --from=builder /app/apps/dist ./apps/dist
-COPY --from=builder /app/server.js ./
 
 # Expose Cloud Run default port
 ENV PORT=8080
 EXPOSE 8080
 
-# Start server
-CMD ["node", "server.js"]
+# Start server using NestJS entrypoint
+CMD ["node", "apps/dist/api/main.js"]
