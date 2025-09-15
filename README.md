@@ -45,7 +45,7 @@ http://localhost:3000/api
 #### Frontend (Angular App)
 
 ```bash
-npx nx serve auth-assessment
+npx nx serve frontend
 ```
 
 Frontend will be running on:
