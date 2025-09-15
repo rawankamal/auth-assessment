@@ -3,16 +3,14 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "start": "node dist/apps/api/main.js",
+    "start": "node server.js",
     "build": "nx run-many --target=build --projects=api,frontend --configuration=production",
     "build:api": "nx build api --configuration=production",
     "build:frontend": "nx build frontend --configuration=production",
     "test:local": "npm run build && npm start",
-    "deploy:gcp": "npm run build && gcloud app deploy --quiet",
-    "deploy:dev": "npm run build && gcloud app deploy --version=dev --no-promote",
-    "start": "node server.js",
-    "start:prod": "NODE_ENV=production node server.js",
     "deploy:gcp": "gcloud app deploy --quiet",
+    "deploy:dev": "npm run build && gcloud app deploy --version=dev --no-promote",
+    "start:prod": "NODE_ENV=production node server.js",
     "logs:gcp": "gcloud app logs tail -s default"
   },
   "private": true,
@@ -41,7 +39,7 @@
     "nodemailer": "^7.0.6",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
-    "reflect-metadata": "^0.1.13",
+    "reflect-metadata": "^0.1.14",
     "rxjs": "~7.8.0",
     "zone.js": "~0.15.0"
   },
@@ -75,8 +73,11 @@
     "@types/passport-jwt": "^4.0.1",
     "@typescript-eslint/utils": "^8.29.0",
     "angular-eslint": "^20.0.0",
+    "compression": "^1.7.4",
     "eslint": "^9.8.0",
     "eslint-config-prettier": "^10.0.0",
+    "helmet": "^7.1.0",
+    "http-proxy-middleware": "^2.0.6",
     "jest": "^30.0.2",
     "jest-environment-node": "^30.0.2",
     "jest-util": "^30.0.2",
@@ -87,9 +88,6 @@
     "tslib": "^2.3.0",
     "typescript": "~5.8.2",
     "typescript-eslint": "^8.29.0",
-    "webpack-cli": "^5.1.4",
-    "http-proxy-middleware": "^2.0.6",
-    "compression": "^1.7.4",
-    "helmet": "^7.1.0"
+    "webpack-cli": "^5.1.4"
   }
 }
