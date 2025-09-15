@@ -24,12 +24,12 @@ WORKDIR /app
 COPY package.json package-lock.json* ./
 RUN npm install --omit=dev --legacy-peer-deps && npm cache clean --force
 
-# Copy built apps from builder (API + Frontend outputs)
+# Copy built apps from builder - FIX THE PATHS HERE
 COPY --from=builder /app/apps/dist ./apps/dist
 
 # Expose Cloud Run default port
 ENV PORT=8080
 EXPOSE 8080
 
-# Start server using NestJS entrypoint
+# Start server using NestJS entrypoint - CORRECTED PATH
 CMD ["node", "apps/dist/api/main.js"]
