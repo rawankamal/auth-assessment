@@ -16,7 +16,7 @@ cd auth-assessment
 ### 2️⃣ Install Dependencies
 
 ```bash
-npm install
+npm install --legacy-peer-deps
 ```
 
 ### 3️⃣ Environment Variables
@@ -45,7 +45,7 @@ http://localhost:3000/api
 #### Frontend (Angular App)
 
 ```bash
-npx nx serve auth-assessment
+npx nx serve frontend
 ```
 
 Frontend will be running on:
@@ -58,63 +58,89 @@ http://localhost:4200
 ## 🏗️ Project Structure
 
 ```
-penny-assessment/
+auth-assessment/
 ├── apps/
-│   ├── api/                     # NestJS backend
+│   ├── api/                                    # NestJS Backend API
 │   │   ├── src/
 │   │   │   ├── app/
-│   │   │   │   ├── auth/        # Authentication module
-│   │   │   │   │   ├── dto/     # Data transfer objects
-│   │   │   │   │   ├── auth.controller.ts
-│   │   │   │   │   ├── auth.module.ts
-│   │   │   │   │   ├── auth.service.ts
-│   │   │   │   │   └── jwt.strategy.ts
-│   │   │   │   ├── users/       # Users module
-│   │   │   │   │   ├── user.schema.ts
-│   │   │   │   │   ├── users.controller.ts
-│   │   │   │   │   ├── users.module.ts
-│   │   │   │   │   └── users.service.ts
-│   │   │   │   ├── app.controller.ts
+│   │   │   │   ├── auth/                      # Authentication module
+│   │   │   │   │   ├── dto/
+│   │   │   │   │   │   └── create-user.dto.ts
+│   │   │   │   │   ├── auth.controller.ts     # Auth endpoints (signup/login/logout/forgot/reset)
+│   │   │   │   │   ├── auth.module.ts         # Auth module configuration
+│   │   │   │   │   ├── auth.service.ts        # Auth business logic
+│   │   │   │   │   └── jwt.strategy.ts        # JWT passport strategy
+│   │   │   │   ├── users/                     # Users module
+│   │   │   │   │   ├── user.schema.ts         # MongoDB user schema
+│   │   │   │   │   ├── users.controller.ts    # User endpoints (profile/list)
+│   │   │   │   │   ├── users.module.ts        # Users module configuration
+│   │   │   │   │   └── users.service.ts       # Users business logic
 │   │   │   │   ├── app.controller.spec.ts
-│   │   │   │   ├── app.module.ts
-│   │   │   │   ├── app.service.ts
-│   │   │   │   └── app.service.spec.ts
+│   │   │   │   ├── app.controller.ts          # Root controller
+│   │   │   │   ├── app.module.ts              # Main app module
+│   │   │   │   ├── app.service.spec.ts
+│   │   │   │   └── app.service.ts             # Root service
 │   │   │   ├── assets/
-│   │   │   └── main.ts          # Entry point
-│   │   ├── tsconfig.app.json
-│   │   ├── tsconfig.spec.json
-│   │   ├── project.json
+│   │   │   │   └── .gitkeep
+│   │   │   └── main.ts                        # Application entry point
+│   │   ├── .env                               # Environment variables (MongoDB, JWT secrets)
+│   │   ├── eslint.config.mjs
 │   │   ├── jest.config.ts
-│   │   └── eslint.config.mjs
-│   └── auth-assessment/         # Angular frontend
-│       ├── public/
+│   │   ├── project.json                       # Nx project configuration
+│   │   ├── tsconfig.app.json
+│   │   ├── tsconfig.json
+│   │   ├── tsconfig.spec.json
+│   │   └── webpack.config.js
+│   │
+│   └── auth-assessment/                       # Angular Frontend App
 │       ├── src/
 │       │   ├── app/
-│       │   │   ├── dashboard/   # Dashboard component
+│       │   │   ├── dashboard/                 # Dashboard component (protected route)
 │       │   │   │   ├── dashboard.css
 │       │   │   │   ├── dashboard.html
 │       │   │   │   └── dashboard.ts
-│       │   │   ├── login/       # Login component
-│       │   │   ├── services/    # Angular services
-│       │   │   ├── signup/      # Signup component
-│       │   │   ├── app.component.ts
-│       │   │   ├── app.config.ts
+│       │   │   ├── forgot-password/           # Forgot password component
+│       │   │   │   ├── forgot-password.html
+│       │   │   │   └── forgot-password.ts
+│       │   │   ├── login/                     # Login component
+│       │   │   │   ├── login.css
+│       │   │   │   ├── login.html
+│       │   │   │   └── login.ts
+│       │   │   ├── reset-password/            # Reset password component
+│       │   │   │   ├── reset-password.html
+│       │   │   │   └── reset-password.ts
+│       │   │   ├── services/                  # Angular services
+│       │   │   │   ├── auth.guard.ts          # Route guard for protected routes
+│       │   │   │   ├── auth.interceptor.ts    # HTTP interceptor for JWT tokens
+│       │   │   │   └── auth.service.ts        # HTTP service for API calls
+│       │   │   ├── signup/                    # Signup component
+│       │   │   │   ├── signup.css
+│       │   │   │   ├── signup.html
+│       │   │   │   └── signup.ts
+│       │   │   ├── store/                     # NgRx state management
+│       │   │   │   ├── auth/                  # Auth feature store
+│       │   │   │   │   ├── auth.actions.ts    # Auth actions (login/logout/signup/etc.)
+│       │   │   │   │   ├── auth.effects.ts    # Side effects for auth actions
+│       │   │   │   │   ├── auth.reducer.ts    # Auth state reducer
+│       │   │   │   │   ├── auth.selectors.ts  # Auth state selectors
+│       │   │   │   │   └── auth.state.ts      # Auth state interface
+│       │   │   │   └── app.state.ts           # Root app state
+│       │   │   ├── app.config.ts              # App configuration
 │       │   │   ├── app.css
 │       │   │   ├── app.html
-│       │   │   ├── app.routes.ts
-│       │   │   └── nx-welcome.ts
-│       │   ├── index.html
-│       │   ├── main.ts
-│       │   └── styles.css
+│       │   │   ├── app.routes.ts              # Routing configuration
+│       │   │   └── app.ts                     # Root app component
+│       │   ├── index.html                     # HTML entry point
+│       │   ├── main.ts                        # Angular bootstrap
+│       │   └── styles.css                     # Global styles (Bootstrap import)
+│       ├── eslint.config.mjs
+│       ├── project.json                       # Nx project configuration
 │       ├── tsconfig.app.json
-│       ├── tsconfig.spec.json
-│       ├── project.json
-│       ├── jest.config.ts
-│       └── eslint.config.mjs
-├── nx.json                      # Nx configuration
-├── package.json
-├── tsconfig.base.json
-└── README.md
+│       └── tsconfig.json
+│
+├── nx.json                                    # Nx workspace configuration
+├── package.json                               # Dependencies and scripts
+└── tsconfig.base.json                         # Base TypeScript configuration
 ```
 
 ---
