@@ -20,7 +20,7 @@ FROM node:20-alpine
 
 WORKDIR /app
 
-# Copy only production dependencies
+# Copy only production package.json (dependencies فقط)
 COPY package.json package-lock.json* ./
 RUN npm install --omit=dev --legacy-peer-deps && npm cache clean --force
 
