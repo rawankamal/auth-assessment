@@ -2,5 +2,9 @@ node_modules
 dist
 apps/dist
 .angular
+.nx
 .git
-.dockerignore
+.gitignore
+Dockerfile
+docker-compose*
+README.md
