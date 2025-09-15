@@ -1,27 +1,31 @@
 # Stage 1: Build
-FROM node:20-alpine AS build
+FROM node:20-alpine AS builder
 
-WORKDIR /usr/src/app
+WORKDIR /app
 
-COPY package*.json ./
-RUN npm install --legacy-peer-deps
+# Install dependencies
+COPY package.json package-lock.json* ./
+RUN npm install
 
+# Copy the rest of the code
 COPY . .
+
+# Build both API and frontend
 RUN npm run build
 
-# Stage 2: Run
+# Stage 2: Production image
 FROM node:20-alpine
 
-WORKDIR /usr/src/app
+WORKDIR /app
 
-# نسخ الـ backend
-COPY --from=build /usr/src/app/dist/apps/api ./dist/apps/api
+# Copy built apps and server.js
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/server.js ./
+COPY package.json ./
 
-# نسخ الـ frontend جوه فولدر public عشان NestJS يقدمه
-COPY --from=build /usr/src/app/dist/apps/auth-assessment ./dist/apps/api/public
-
-COPY package*.json ./
+# Install only production dependencies
 RUN npm install --omit=dev --legacy-peer-deps
 
-EXPOSE 3000
-CMD ["node", "dist/apps/api/main.js"]
+EXPOSE 8080
+
+CMD ["node", "server.js"]

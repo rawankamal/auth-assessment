@@ -3,15 +3,15 @@ const path = require("path");
 
 const app = express();
 
-// Serve Angular frontend
-app.use(express.static(path.join(__dirname, "dist/auth-assessment")));
+// Serve Angular frontend (correct Nx output path)
+app.use(express.static(path.join(__dirname, "dist/apps/auth-assessment")));
 
-// API routes
-app.use("/api", require("./dist/api/main.js"));
+// API routes (correct Nx output path)
+app.use("/api", require("./dist/apps/api/main.js"));
 
-// أي Route تاني يفتح Angular app
+// Any other route serves Angular app
 app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "dist/auth-assessment/index.html"));
+  res.sendFile(path.join(__dirname, "dist/apps/auth-assessment/index.html"));
 });
 
 const PORT = process.env.PORT || 8080;
