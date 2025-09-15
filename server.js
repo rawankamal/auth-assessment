@@ -119,63 +119,14 @@ if (fs.existsSync(frontendPath)) {
 
 // Angular SPA fallback - serve index.html for all non-API routes
 app.get('*', (req, res) => {
-  const indexPath = path.join(frontendPath, 'index.html');
-
-  // Check if index.html exists
+  const indexPath = path.join(frontendPath, 'index.html'); // ✅ مش من الـ API
   if (fs.existsSync(indexPath)) {
     res.sendFile(indexPath);
   } else {
-    // Fallback HTML if build is missing
-    res.status(404).send(`
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <title>Authentication App</title>
-          <meta charset="utf-8">
-          <meta name="viewport" content="width=device-width, initial-scale=1">
-          <style>
-            body {
-              font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-              text-align: center;
-              margin-top: 50px;
-              background: #f5f5f5;
-              color: #333;
-            }
-            .container {
-              max-width: 600px;
-              margin: 0 auto;
-              padding: 40px 20px;
-              background: white;
-              border-radius: 8px;
-              box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            }
-            .error { color: #d32f2f; }
-            .info { color: #1976d2; }
-            .path {
-              font-family: monospace;
-              background: #f0f0f0;
-              padding: 8px;
-              border-radius: 4px;
-              margin: 10px 0;
-            }
-          </style>
-        </head>
-        <body>
-          <div class="container">
-            <h1>🔐 Authentication Application</h1>
-            <p class="error">Frontend build not available</p>
-            <div class="path">Expected: ${frontendPath}</div>
-            <div class="path">Looking for: ${indexPath}</div>
-            <p class="info">Please ensure the application is built correctly with:</p>
-            <code>npm run build</code>
-            <hr>
-            <p><a href="/api">Check API Status</a> | <a href="/health">Health Check</a></p>
-          </div>
-        </body>
-      </html>
-    `);
+    res.status(404).send('Frontend build not found');
   }
 });
+
 
 // Global error handling
 app.use((error, req, res, next) => {

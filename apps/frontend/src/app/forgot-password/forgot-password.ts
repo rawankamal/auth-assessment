@@ -8,8 +8,8 @@ import { CommonModule } from '@angular/common';
   selector: 'app-forgot-password',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
-  templateUrl:'./forgot-password.html',
-  styleUrls: ['../login/login.css'] // Reuse login styles
+  templateUrl: './forgot-password.html',
+  styleUrls: ['../login/login.css'], // Reuse login styles
 })
 export class ForgotPasswordComponent {
   forgotPasswordForm;
@@ -24,7 +24,7 @@ export class ForgotPasswordComponent {
 
   constructor() {
     this.forgotPasswordForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]]
+      email: ['', [Validators.required, Validators.email]],
     });
   }
 
@@ -43,12 +43,19 @@ export class ForgotPasswordComponent {
       },
       error: (err) => {
         this.isLoading = false;
-        this.errorMessage = err.error?.message || 'Failed to send reset instructions';
-      }
+        this.errorMessage =
+          err.error?.message || 'Failed to send reset instructions';
+      },
     });
   }
 
   navigateToLogin() {
     this.router.navigate(['/login']);
+  }
+  getResetLink(): string {
+    if (!this.resetToken) return '';
+    const { protocol, hostname, port } = window.location;
+    const baseUrl = `${protocol}//${hostname}${port ? `:${port}` : ''}`;
+    return `${baseUrl}/reset-password?token=${this.resetToken}`;
   }
 }
