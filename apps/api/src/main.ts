@@ -14,12 +14,13 @@ async function bootstrap() {
 
   app.setGlobalPrefix('api');
 
-  // Serve Angular frontend build
+  // Serve Angular frontend build - CORRECTED PATH
   const frontendPath = path.join(__dirname, '..', 'apps', 'frontend');
+  console.log('Frontend path:', frontendPath);
 
   app.use(express.static(frontendPath));
 
-  // أي request مش API → رجّعه لـ index.html بتاع Angular
+  // Handle Angular routes (SPA fallback)
   const expressApp = app.getHttpAdapter().getInstance();
   expressApp.get(
     /^(?!\/api).*/,
@@ -28,9 +29,19 @@ async function bootstrap() {
     }
   );
 
-  const port = process.env['PORT'] || 8080;
-  await app.listen(port, '0.0.0.0');
-  console.log(`🚀 Server running on port ${port}`);
+  // CRITICAL FIX: Use Cloud Run PORT environment variable and bind to 0.0.0.0
+  const port = parseInt(process.env['PORT'] || '8080', 10);
+  const host =
+    process.env['NODE_ENV'] === 'production' ? '0.0.0.0' : 'localhost';
+
+  await app.listen(port, host);
+
+  console.log(`🚀 Server running on ${host}:${port}`);
+  console.log(`📱 Environment: ${process.env['NODE_ENV'] || 'development'}`);
+  console.log(`🔗 Frontend served from: ${frontendPath}`);
 }
 
-bootstrap();
+bootstrap().catch((err) => {
+  console.error('❌ Failed to start server:', err);
+  process.exit(1);
+});

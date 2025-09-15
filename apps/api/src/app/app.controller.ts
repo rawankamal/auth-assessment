@@ -6,4 +6,15 @@ export class AppController {
   getHello(): string {
     return 'Hello from your API 🎉';
   }
+
+  @Get('health')
+  healthCheck() {
+    return {
+      status: 'ok',
+      timestamp: new Date().toISOString(),
+      uptime: process.uptime(),
+      environment: process.env['NODE_ENV'],
+      port: process.env['PORT'],
+    };
+  }
 }
