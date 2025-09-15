@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app/app.module';
 import * as path from 'path';
@@ -20,12 +21,12 @@ async function bootstrap() {
 
   // أي request مش API → رجّعه لـ index.html بتاع Angular
   const expressApp = app.getHttpAdapter().getInstance();
-expressApp.get(
-  /^(?!\/api).*/,
-  (req: express.Request, res: express.Response) => {
-    res.sendFile(path.join(frontendPath, 'index.html'));
-  }
-);
+  expressApp.get(
+    /^(?!\/api).*/,
+    (req: express.Request, res: express.Response) => {
+      res.sendFile(path.join(frontendPath, 'index.html'));
+    }
+  );
 
   const port = process.env['PORT'] || 3000;
   await app.listen(port, '0.0.0.0');
