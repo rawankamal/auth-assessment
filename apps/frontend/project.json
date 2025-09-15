@@ -1,29 +1,29 @@
 {
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "name": "auth-assessment",
+  "name": "frontend",
   "projectType": "application",
-  "sourceRoot": "apps/auth-assessment/src",
+  "sourceRoot": "apps/frontend/src",
   "prefix": "app",
   "targets": {
     "build": {
       "executor": "@angular-devkit/build-angular:browser",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "dist/apps/auth-assessment",
-        "index": "apps/auth-assessment/src/index.html",
-        "main": "apps/auth-assessment/src/main.ts",
+        "outputPath": "dist/apps/frontend",
+        "index": "apps/frontend/src/index.html",
+        "main": "apps/frontend/src/main.ts",
         "polyfills": ["zone.js"],
-        "tsConfig": "apps/auth-assessment/tsconfig.app.json",
+        "tsConfig": "apps/frontend/tsconfig.app.json",
         "assets": [
-          "apps/auth-assessment/src/favicon.ico",
-          "apps/auth-assessment/src/assets"
+          "apps/frontend/src/favicon.ico",
+          "apps/frontend/src/assets"
         ],
-        "styles": ["apps/auth-assessment/src/styles.css"],
+        "styles": ["apps/frontend/src/styles.css"],
         "scripts": []
       },
       "configurations": {
         "production": {
-          "outputPath": "dist/apps/auth-assessment",
+          "outputPath": "apps/dist/apps/frontend",
           "budgets": [
             {
               "type": "initial",
@@ -45,7 +45,7 @@
           "buildOptimizer": true
         },
         "development": {
-          "outputPath": "dist/apps/auth-assessment",
+          "outputPath": "dist/apps/frontend",
           "buildOptimizer": false,
           "optimization": false,
           "sourceMap": true,
@@ -60,10 +60,10 @@
       "executor": "@angular-devkit/build-angular:dev-server",
       "configurations": {
         "production": {
-          "buildTarget": "auth-assessment:build:production"
+          "buildTarget": "frontend:build:production"
         },
         "development": {
-          "buildTarget": "auth-assessment:build:development"
+          "buildTarget": "frontend:build:development"
         }
       },
       "defaultConfiguration": "development"
@@ -71,7 +71,7 @@
     "extract-i18n": {
       "executor": "@angular-devkit/build-angular:extract-i18n",
       "options": {
-        "buildTarget": "auth-assessment:build"
+        "buildTarget": "frontend:build"
       }
     },
     "lint": {
@@ -79,8 +79,8 @@
       "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": [
-          "apps/auth-assessment/**/*.ts",
-          "apps/auth-assessment/**/*.html"
+          "apps/frontend/**/*.ts",
+          "apps/frontend/**/*.html"
         ]
       }
     },
@@ -88,7 +88,7 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
-        "jestConfig": "apps/auth-assessment/jest.config.ts"
+        "jestConfig": "apps/frontend/jest.config.ts"
       }
     }
   },
