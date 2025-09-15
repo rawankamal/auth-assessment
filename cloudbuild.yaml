@@ -1,0 +1,54 @@
+steps:
+  # Build the Docker image
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-t'
+      - 'gcr.io/$PROJECT_ID/auth-assessment:$COMMIT_SHA'
+      - '-t'
+      - 'gcr.io/$PROJECT_ID/auth-assessment:latest'
+      - '.'
+    timeout: '20m'
+
+  # Push the Docker image to Google Container Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - 'gcr.io/$PROJECT_ID/auth-assessment:$COMMIT_SHA'
+
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - 'gcr.io/$PROJECT_ID/auth-assessment:latest'
+
+  # Deploy to Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:slim'
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'deploy'
+      - 'auth-assessment'
+      - '--image'
+      - 'gcr.io/$PROJECT_ID/auth-assessment:$COMMIT_SHA'
+      - '--region'
+      - 'us-central1'
+      - '--platform'
+      - 'managed'
+      - '--allow-unauthenticated'
+      - '--set-env-vars'
+      - 'NODE_ENV=production,MONGODB_URI=mongodb+srv://rawan:penny-db123@penny-db.rwe3jvs.mongodb.net/?retryWrites=true&w=majority&appName=penny-db,JWT_SECRET=penny-secret-key-production-2024-very-secure-long-key,JWT_EXPIRES_IN=8h'
+      - '--memory'
+      - '1Gi'
+      - '--cpu'
+      - '1'
+      - '--timeout'
+      - '300'
+      - '--min-instances'
+      - '1'
+      - '--max-instances'
+      - '10'
+
+timeout: '30m'
+images:
+  - 'gcr.io/$PROJECT_ID/auth-assessment:$COMMIT_SHA'
+  - 'gcr.io/$PROJECT_ID/auth-assessment:latest'
