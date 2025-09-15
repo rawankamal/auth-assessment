@@ -14,8 +14,8 @@ async function bootstrap() {
 
   app.setGlobalPrefix('api');
 
-  // Serve Angular frontend build (بعد الـ Docker build بيكون في ./public)
-  const frontendPath = path.join(__dirname, '..', 'apps/frontend');
+  // Serve Angular frontend build
+  const frontendPath = path.join(__dirname, '..', 'apps', 'frontend');
 
   app.use(express.static(frontendPath));
 

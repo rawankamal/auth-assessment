@@ -25,7 +25,7 @@ COPY package.json package-lock.json* ./
 RUN npm install --omit=dev --legacy-peer-deps && npm cache clean --force
 
 # Copy built apps from builder
-COPY --from=builder /app/apps/dist ./apps/dist
+COPY --from=builder /app/dist ./dist
 
 # Expose Cloud Run default port
 ENV PORT=8080
